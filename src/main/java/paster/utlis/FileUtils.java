@@ -215,4 +215,21 @@ public class FileUtils {
 
         return toYear + "/" + toMonth + "-" + today;
     }
+
+    public static String fixPath(String path) {
+        String osname = System.getProperty("os.name").toLowerCase();
+        boolean rt = osname.startsWith("windows");
+
+        if (null==path) return path;
+        if (path.length()>=1 && ('/'==path.charAt(0) || '\\'==path.charAt(0))) {
+            // 根目录, Windows下需补上盘符.
+            if (rt) {
+                String userdir = System.getProperty("user.dir");
+                if (null!=userdir && userdir.length()>=2) {
+                    return userdir.substring(0, 2) + path;
+                }
+            }
+        }
+        return  path;
+    }
 }

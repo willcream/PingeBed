@@ -1,21 +1,32 @@
 package paster.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import paster.bean.PicUploadResult;
 import paster.log.Logger;
 import paster.prop.Prop;
 import paster.utlis.FileUtils;
 import paster.utlis.IPUtils;
+import paster.utlis.LittleTools;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.UUID;
 
 
 @Controller
 public class UploadController {
+    @Value("${bed.uploadPath}")
+    private String UPLOAD_PATH;
+    @Value("${bed.urlPrefix}")
+    private String URL_PREFIX;
 
     public static boolean anonymous = true;
 
@@ -35,6 +46,38 @@ public class UploadController {
 
         return map;
     }
+
+
+
+    @RequestMapping(value = "/uploadPic", method = RequestMethod.POST)
+    @ResponseBody
+    public PicUploadResult uploadPic(MultipartFile file, HttpServletRequest request){
+        String oriName = file.getOriginalFilename();
+        String name = UUID.randomUUID().toString()+LittleTools.getSuffix(oriName);
+        String realPath = FileUtils.fixPath(UPLOAD_PATH);
+        Path dir = Paths.get(realPath);
+        if(!dir.toFile().exists()){
+            dir.toFile().mkdir();
+        }
+        Path path = Paths.get(realPath+name);
+
+        PicUploadResult result = new PicUploadResult();
+        try {
+//            path.toFile().createNewFile();
+            Files.write(path,file.getBytes());
+            result.setData(URL_PREFIX+name);
+            result.setCode(200);
+            return result;
+        } catch (IOException e) {
+            e.printStackTrace();
+            result.setData(e);
+            result.setMessage("上传图片失败");
+            result.setCode(500);
+            return result;
+        }
+    }
+
+
 
 
     @RequestMapping(value = "/clone", method = RequestMethod.POST)

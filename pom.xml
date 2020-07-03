@@ -10,9 +10,9 @@
     </parent>
     <packaging>war</packaging>
     <groupId>paster</groupId>
-    <artifactId>imagebed</artifactId>
+    <artifactId>PingeBed</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>imagebed</name>
+    <name>PingeBed</name>
     <description>练习图床----不许放弃!!!!!</description>
 
     <properties>
@@ -41,12 +41,12 @@
 <!--            </exclusions>-->
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-servlet-api</artifactId>
-            <version>8.0.36</version>
-            <scope>provided</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.tomcat</groupId>-->
+<!--            <artifactId>tomcat-servlet-api</artifactId>-->
+<!--            <version>8.0.36</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>
@@ -55,7 +55,20 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <!-- 资源文件拷贝插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
     </build>
 
 </project>
